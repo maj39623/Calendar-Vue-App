@@ -2,33 +2,40 @@
   <div class="container">
     <div class="calendar">
       <div class="month">
-        <i class="fas fa-angle-left prev" @click="goPrev()"></i>
+        <i class="fas fa-angle-left prev" @click="goPrev(); newLastDayMethod();"></i>
         <div class="date">
-            <h1>{{todayMonth}}</h1>
+            <h1>{{newMonth}}, {{newYear}}</h1>
             <p>{{todayDay}}</p>
         </div>
-        <i class="fas fa-angle-right next" @click="goNext()"></i>
+        <i class="fas fa-angle-right next" @click="goNext(); newLastDayMethod();"></i>
       </div>
       <Dates 
-      :days="lastDay"
+      :days="lastDay" 
       />
     </div>
+    <Event />
   </div>
 </template>
 
 <script>
 import Dates from "@/components/Dates.vue";
+import Event from "./Event.vue";
 
 export default {
   name: 'Calendar',
   components: {
     Dates,
-  },
+    Event
+},
   data() {
       return {
         newMonth: '',
+        newYear: '',
+        lastDay: '',
+        prevLastDay: '',
+        firstDayIndex: '',
+        newLastDay: '1',
         date: new Date(),
-        date2: new Date().setDate(1),
         months: [
           "January",
           "February",
@@ -48,30 +55,61 @@ export default {
     },
     methods: {
       goNext() {
-        this.date.setMonth(this.date.getMonth() + 1);
+        this.newMonth = this.date.setMonth(this.date.getMonth() + 1)
+        this.newYear = this.date.getFullYear() 
         console.log("next",this.date)
-        this.newMonth = this.todayMonth
+        this.newMonth = this.months[this.date.getMonth()]
         console.log(`new month: ${this.newMonth}`)
-        
       },
       goPrev() {
-        this.date.setMonth(this.date.getMonth() - 1);
+        this.newMonth = this.date.setMonth(this.date.getMonth() - 1)
         console.log("prev,",this.date)
-      }
+        this.newMonth = this.months[this.date.getMonth()]
+      },
+      monthMethod() {
+        this.newMonth = this.months[this.date.getMonth()]
+      },
+      yearMethod() {
+        this.newYear = this.date.getFullYear()
+      },
+      lastDayMethod() {
+        this.lastDay = new Date(this.date.getFullYear(), this.date.getMonth() + 1, 0).getDate();
+      },
+      newLastDayMethod() {
+        this.newLastDay = new Date(this.date.getFullYear(), this.date.getMonth() + 1, 0).getDate();
+        console.log(`new day: ${this.newLastDay}`)
+        this.lastDay = this.newLastDay
+      },
+      prevLastDayMethod() {
+        this.prevLastDay = new Date(this.date.getFullYear(), this.date.getMonth(), 0).getDate();
+      },
+      firstDayIndexMethod() {
+        this.firstDayIndex = this.date.getDay();
+      },
+      addEvent() {
+        this.events.push(this.enteredValue);
+        this.enteredValue = '';
+        alert("Event Added")
+    },
     },
   computed: {
-    todayMonth: function () {
-      return this.months[this.date.getMonth()];
-    },
+    // todayMonth: function () {
+    //   return this.months[this.date.getMonth()];
+    // },
     todayDay: function () {
       return new Date().toDateString();
     },
-    lastDay: function () {
-      return new Date(this.date.getFullYear(), this.date.getMonth() + 1, 0).getDate();
-    }
+    // lastDay: function () {
+    //   return new Date(this.date.getFullYear(), this.date.getMonth() + 1, 0).getDate();
+    // }
   },
   mounted() {
     console.log(this.lastDay)
+    this.yearMethod()
+    this.monthMethod()
+    this.lastDayMethod()
+    this.prevLastDayMethod()
+    this.firstDayIndexMethod()
   }
 }
 </script>

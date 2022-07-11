@@ -2,7 +2,7 @@
   <div class="container">
     <div class="calendar">
       <div class="month">
-        <i class="fas fa-angle-left prev"></i>
+        <i class="fas fa-angle-left prev" @click="goPrev()"></i>
         <div class="date">
             <h1>{{todayMonth}}</h1>
             <p>{{todayDay}}</p>
@@ -26,6 +26,7 @@ export default {
   },
   data() {
       return {
+        newMonth: '',
         date: new Date(),
         date2: new Date().setDate(1),
         months: [
@@ -49,7 +50,13 @@ export default {
       goNext() {
         this.date.setMonth(this.date.getMonth() + 1);
         console.log("next",this.date)
-        this.todayMonth = this.date
+        this.newMonth = this.todayMonth
+        console.log(`new month: ${this.newMonth}`)
+        
+      },
+      goPrev() {
+        this.date.setMonth(this.date.getMonth() - 1);
+        console.log("prev,",this.date)
       }
     },
   computed: {

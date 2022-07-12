@@ -9,8 +9,22 @@
     <div>Sat</div>
   </div>
   <div class="days">
-    <div class="daydiv" v-for="day in days" :key="day">
-      <div @click="alert">{{ day }}</div>
+    <div
+      class="daydiv"
+      @click="alert()"
+      v-for="(day, index) in days"
+      :key="day"
+    >
+      <div>{{ day }} - {{ index }}</div>
+      <span v-show="activeItem === index && clicked">
+        <li
+          class="eventinfo"
+          v-for="event in $store.state.storedEvents"
+          :key="event"
+        >
+          {{ event }}
+        </li>
+      </span>
     </div>
   </div>
 </template>
@@ -22,12 +36,18 @@ export default {
   data() {
     return {
       clicked: false,
+      activeItem: "",
     };
   },
   methods: {
-    alert() {
+    alert(idx) {
       alert("Day Selected");
       this.clicked = !this.clicked;
+      this.activeItem = idx;
+      idx = this.clicked;
+      this.$store.state.daySelected = !this.$store.state.daySelected;
+      this.$store.state.dateSelected = this.index;
+      console.log(this.index);
       console.log(this.clicked);
     },
   },
@@ -83,5 +103,9 @@ export default {
 }
 .today {
   background-color: #167e56;
+}
+.eventinfo {
+  list-style: none;
+  padding: 0;
 }
 </style>

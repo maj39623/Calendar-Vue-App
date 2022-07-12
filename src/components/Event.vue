@@ -1,45 +1,53 @@
 <template>
-    <div class="app">
-        <div>
-            <label for="event">Enter Your Event</label>
-            <input type="text" id="event" v-model="enteredValue">
-            <button @click="addEvent">Add Event</button>
-            <button @click="saveEvents">Save Events</button>
-        </div>
-        <ul>
-            <li v-for="event in events" :key="event" >{{event}}</li>
-        </ul>
+  <div class="app">
+    <div>
+      <label for="event">Enter Your Event</label>
+      <input type="text" id="event" v-model="enteredValue" />
+      <button @click="addEvent">Add Event</button>
+      <button @click="clearEvents">Clear Events</button>
+      <button @click="saveEvents">Save Events</button>
     </div>
+    <ul>
+      <li v-for="event in events" :key="event">{{ event }}</li>
+    </ul>
+    <!-- <div>{{ this.$store.state.storedEvents }}</div> -->
+  </div>
+
+  <section id="log" class="container">
+    <h2>Upcoming Events:</h2>
+    <h3>
+      <ul v-for="event in $store.state.storedEvents" :key="event">
+        <li>{{ event }}</li>
+      </ul>
+    </h3>
+  </section>
 </template>
 
 <script>
-
 export default {
-  name: 'Event',
+  name: "Event",
   data() {
     return {
-        enteredValue: '',
-        events: [],
-        dayEvents: []
-    }
+      enteredValue: "",
+      events: [],
+      dayEvents: [],
+    };
   },
   methods: {
     addEvent() {
-        this.events.push(this.enteredValue);
-        this.enteredValue = '';
-        alert("Event Added")
+      this.$store.state.storedEvents.push(this.enteredValue);
+      this.enteredValue = "";
+      alert("Event Added");
+    },
+    clearEvents() {
+      this.$store.state.storedEvents = [];
     },
     saveEvents() {
-        this.dayEvents.push(this.events)
-        this.events = []
-        console.log(this.dayEvents)
-    }
-  }
-  
-
-}
+      this.$store.state.storedEvents = [];
+    },
+  },
+};
 </script>
-
 
 <style>
 .app {
@@ -48,7 +56,8 @@ export default {
   padding: 1rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
 }
-label, input {
+label,
+input {
   margin-bottom: 0.5rem;
   display: block;
   width: 100%;
@@ -65,6 +74,18 @@ ul {
 li {
   margin: 1rem 0;
   padding: 1rem;
-  border: 1px solid #ccc;
+  /* border: 1px solid #ccc; */
+}
+.container {
+  text-align: center;
+  padding: 0.5rem;
+  margin: 1rem auto;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
+  border-radius: 12px;
+}
+section {
+  width: 90%;
+  max-width: 40rem;
+  margin: auto;
 }
 </style>

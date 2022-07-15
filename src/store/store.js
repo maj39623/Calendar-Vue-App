@@ -5,6 +5,7 @@ const store = createStore({
     storedEvents: [],
     daySelected: false,
     dateSelected: [],
+    savedEvents: new Map(),
   },
 });
 

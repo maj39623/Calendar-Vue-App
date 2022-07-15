@@ -21,24 +21,55 @@
           "
         ></i>
       </div>
-      <Dates :days="lastDay" />
+      <div class="weekdays">
+        <div>Sun</div>
+        <div>Mon</div>
+        <div>Tues</div>
+        <div>Wens</div>
+        <div>Thurs</div>
+        <div>Fri</div>
+        <div>Sat</div>
+      </div>
+      <div class="days">
+        <div class="daydiv" v-for="(day, index) in lastDay" :key="day">
+          <div
+            @click="
+              alert(index);
+              filtered();
+            "
+          >
+            {{ day }}
+          </div>
+          <span v-if="$store.state.savedEvents.index === activeItem">
+            <li
+              v-for="event in $store.state.savedEvents"
+              :key="event"
+              class="eventinfo"
+            >
+              {{ event.event }}
+            </li>
+          </span>
+        </div>
+      </div>
     </div>
-    <Event v-if="$store.state.daySelected" />
+    <Event v-if="$store.state.daySelected" :index="activeItem" />
   </div>
 </template>
 
 <script>
-import Dates from "@/components/Dates.vue";
 import Event from "./Event.vue";
 
 export default {
   name: "Calendar",
   components: {
-    Dates,
     Event,
   },
   data() {
     return {
+      filteredEvents: [],
+      //filter through all saved events in store and only show events in upcoming events that match the active item index
+      clicked: false,
+      activeItem: "",
       newMonth: "",
       firstDay: "",
       newYear: "",
@@ -65,6 +96,13 @@ export default {
     };
   },
   methods: {
+    alert(idx) {
+      alert("Day Selected");
+      this.clicked = !this.clicked;
+      this.activeItem = idx;
+      this.$store.state.daySelected = !this.$store.state.daySelected;
+      this.$store.state.dateSelected = this.index;
+    },
     goNext() {
       this.newMonth = this.date.setMonth(this.date.getMonth() + 1);
       this.newYear = this.date.getFullYear();
@@ -113,6 +151,13 @@ export default {
       this.events.push(this.enteredValue);
       this.enteredValue = "";
       alert("Event Added");
+    },
+    filtered() {
+      const newFilter = this.$store.state.savedEvents.filter(
+        (event) => event.event === "test"
+      );
+      this.filteredEvents = newFilter;
+      console.log(this.filteredEvents);
     },
   },
   computed: {
@@ -186,5 +231,54 @@ export default {
 
 .month p {
   font-size: 1.6rem;
+}
+.weekdays {
+  width: 100%;
+  height: 5rem;
+  padding: 0 0.4rem;
+  display: flex;
+  align-items: center;
+}
+
+.weekdays div {
+  font-size: 1.5rem;
+  font-weight: 400;
+  letter-spacing: 0.1rem;
+  width: calc(44.2rem / 7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-shadow: 0 0.3rem 0.5rem rgba(0, 0, 0, 0.5);
+}
+.days {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0.2rem;
+}
+
+.daydiv div {
+  font-size: 1.4rem;
+  margin: 0.3rem;
+  width: calc(40.2rem / 7);
+  height: 5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-shadow: 0 0.3rem 0.5rem rgba(0, 0, 0, 0.5);
+  transition: background-color 0.2s;
+}
+
+.daydiv div:hover:not(.today) {
+  background-color: #262626;
+  border: 0.2rem solid #777;
+  cursor: pointer;
+}
+.today {
+  background-color: #167e56;
+}
+.eventinfo {
+  list-style: none;
+  padding: 0;
 }
 </style>
